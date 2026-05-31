@@ -1,0 +1,70 @@
+# Dependencies
+node_modules/
+
+# Expo
+.expo/
+.expo-shared/
+
+# Build outputs
+dist/
+web-build/
+
+# Native folders (if using Expo managed workflow)
+ios/
+android/
+
+# Logs
+npm-debug.*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Keys & certificates
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# TypeScript
+*.tsbuildinfo
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# VS Code
+.vscode/
+
+# JetBrains IDEs
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Git merge leftovers
+*.orig.*
+
+# Coverage
+coverage/
+
+# Cache
+.cache/
+
+# Bun
+.bun/
+
+# Turborepo
+.turbo/
