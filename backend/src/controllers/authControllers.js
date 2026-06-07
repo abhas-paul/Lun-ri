@@ -1,3 +1,4 @@
+import { upsertStreamUser } from "../lib/stream.js";
 import User from "../models/User.js";
 import jwt from 'jsonwebtoken';
 
@@ -55,14 +56,35 @@ export async function signup(req, res) {
             profilePic: profilePic,
         });
 
-        // TODO: Add user to stream as well.
+        // 7. Add user to Stream as well
+        try {
+            await upsertStreamUser({
+                id: newUser._id.toString(),
+                name: newUser.name,
+                image: newUser.profilePic,
+            });
+        } catch (error) {
+            console.error(
+                `Failed to create Stream user for ${newUser._id}:`,
+                error
+            );
 
-        // Check JWT secret
+            // Rollback MongoDB user
+            await User.findByIdAndDelete(newUser._id);
+
+            return res.status(500).json({
+                success: false,
+                message: "Failed to create chat profile. Please try again.",
+            });
+        }
+
+
+        // 8. Check JWT secret
         if (!process.env.JWT_SEC_KEY) {
             throw new Error("JWT_SEC_KEY is missing from environment variables.");
         }
 
-        // 7. Generate auth token
+        // 9. Generate auth token
         const token = jwt.sign(
             {
                 userId: newUser._id,
@@ -73,7 +95,7 @@ export async function signup(req, res) {
             }
         );
 
-        // 8. Store token in secure cookie
+        // 10. Store token in secure cookie
         res.cookie("jwt", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
@@ -81,7 +103,7 @@ export async function signup(req, res) {
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
-        // 9. Send safe user object
+        // 11. Send safe user object
         return res.status(201).json({
             success: true,
             user: {
@@ -96,7 +118,7 @@ export async function signup(req, res) {
     } catch (error) {
         console.error("Signup Error:", error);
 
-        // 10. Handle duplicate email race condition
+        // 12. Handle duplicate email race condition
         if (error.code === 11000) {
             return res.status(409).json({
                 success: false,
