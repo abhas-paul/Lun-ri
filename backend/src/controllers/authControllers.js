@@ -242,3 +242,107 @@ export function logout(req, res) {
         });
     }
 }
+
+export async function onboard(req, res) {
+    try {
+        const userId = req.user._id;
+
+        // 1. Prevent re-onboarding
+        if (req.user.isOnboarded) {
+            return res.status(400).json({
+                success: false,
+                message: "User has already completed onboarding.",
+            });
+        }
+
+        const {
+            name,
+            bio,
+            nativeLanguage,
+            location,
+            profilePic,
+        } = req.body;
+
+        // 2. Validate required fields
+        const missingFields = [];
+
+        if (!name) missingFields.push("name");
+        if (!bio) missingFields.push("bio");
+        if (!nativeLanguage) missingFields.push("nativeLanguage");
+        if (!location) missingFields.push("location");
+
+        if (missingFields.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: "All required fields must be provided.",
+                missingFields,
+            });
+        }
+
+        // 3. Build update payload
+        const updateData = {
+            name: name.trim(),
+            bio: bio.trim(),
+            nativeLanguage,
+            location,
+            isOnboarded: true,
+        };
+
+        // 4. Update profile picture only if user provided one
+        if (profilePic) {
+            updateData.profilePic = profilePic;
+        }
+
+        // 5. Update user in MongoDB
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            updateData,
+            {
+                new: true,
+                runValidators: true,
+            }
+        ).select("-password");
+
+        // 6. User not found
+        if (!updatedUser) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found.",
+            });
+        }
+
+        // 7. Sync user with Stream
+        try {
+            await upsertStreamUser({
+                id: updatedUser._id.toString(),
+                name: updatedUser.name,
+                image: updatedUser.profilePic,
+            });
+        } catch (error) {
+            console.error(
+                `Failed to update Stream profile for ${updatedUser._id}:`,
+                error
+            );
+
+            return res.status(500).json({
+                success: false,
+                message: "Failed to create chat profile.",
+            });
+        }
+
+        // 8. Success response
+        return res.status(200).json({
+            success: true,
+            message: "Onboarding completed successfully.",
+            user: updatedUser,
+        });
+
+    } catch (error) {
+        console.error("Onboarding Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error.",
+        });
+    }
+}
