@@ -197,5 +197,26 @@ export async function login(req, res) {
 }
 
 export function logout(req, res) {
-    res.send("logout")
+    try {
+        // 1. Remove auth cookie
+        res.clearCookie("jwt", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+        });
+
+        // 2. Return success response
+        return res.status(200).json({
+            success: true,
+            message: "Logged out successfully.",
+        });
+
+    } catch (error) {
+        console.error("Logout Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error.",
+        });
+    }
 }
