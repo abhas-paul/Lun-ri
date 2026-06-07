@@ -112,7 +112,88 @@ export async function signup(req, res) {
 }
 
 export async function login(req, res) {
-    res.send("login")
+    try {
+        const { email, password } = req.body;
+
+        // 1. Basic validation
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required.",
+            });
+        }
+
+        // 2. Find user with password
+        const user = await User.findOne({
+            email: email.trim().toLowerCase(),
+        }).select("+password");
+
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid email or password.",
+            });
+        }
+
+        // 3. Verify password
+        const isPassCorrect = await user.comparePassword(password);
+
+        if (!isPassCorrect) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid email or password.",
+            });
+        }
+
+        // 4. Check JWT secret
+        if (!process.env.JWT_SEC_KEY) {
+            throw new Error("JWT_SEC_KEY is missing from environment variables.");
+        }
+
+        // 5. Generate token
+        const token = jwt.sign(
+            {
+                userId: user._id,
+            },
+            process.env.JWT_SEC_KEY,
+            {
+                expiresIn: "7d",
+            }
+        );
+
+        // 6. Store token in cookie
+        res.cookie("jwt", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+
+        // 7. Return safe user object
+        return res.status(200).json({
+            success: true,
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                profilePic: user.profilePic,
+                bio: user.bio,
+                nativeLanguage: user.nativeLanguage,
+                location: user.location,
+                isOnboarded: user.isOnboarded,
+                friends: user.friends,
+                createdAt: user.createdAt,
+            },
+        });
+
+    } catch (error) {
+        console.error("Login Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error.",
+        });
+    }
 }
 
 export function logout(req, res) {
