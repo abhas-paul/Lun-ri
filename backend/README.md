@@ -38,12 +38,19 @@ This backend powers authentication, onboarding, friend system, recommendations, 
 
 src/
 ├── controllers/        # Route logic (auth, users, friends)
+
 ├── models/             # Mongoose schemas
+
 ├── routes/             # API routes
+
 ├── middleware/         # JWT auth middleware
+
 ├── lib/                # DB + Stream setup
+
 ├── utils/              # Helpers (Stream, tokens)
+
 └── server.js           # Entry point
+
 
 ---
 
