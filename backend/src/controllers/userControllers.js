@@ -247,3 +247,37 @@ export async function getFriendRequests(req, res) {
         });
     }
 }
+
+export async function getOutgoingFriendReqs(req, res) {
+  try {
+    const userId = req.user._id;
+
+    // 1. Fetch all pending friend requests sent by current user
+    const outgoingRequests = await FriendRequest.find({
+      sender: userId,
+      status: "pending",
+    }).populate(
+      "recipient",
+      "name profilePic nativeLanguage location bio"
+    );
+
+    // 2. Return outgoing requests
+    return res.status(200).json({
+      success: true,
+      outgoingRequests,
+    });
+
+  } catch (error) {
+    // Log error for debugging (do not expose internal details to client)
+    console.error(
+      "Error in getOutgoingFriendReqs controller:",
+      error
+    );
+
+    // Generic server error response
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+}

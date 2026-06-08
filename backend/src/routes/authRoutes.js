@@ -10,6 +10,10 @@ router.post("/logout", logout);
 
 router.post("/onboard", protectedRoute, onboard)
 
+// TODO:
+// add forget-password route.
+// add send-password reset email route.
+
 // check if the user is logged in.
 router.get("/me", protectedRoute, (req, res) => {
     return res.status(200).json({
