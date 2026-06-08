@@ -205,3 +205,45 @@ export async function acceptFriendRequest(req, res) {
         });
     }
 }
+
+export async function getFriendRequests(req, res) {
+    try {
+        const userId = req.user._id;
+
+        // 1. Incoming friend requests (pending)
+        const incomingReqs = await FriendRequest.find({
+            recipient: userId,
+            status: "pending",
+        }).populate(
+            "sender",
+            "name profilePic nativeLanguage location bio"
+        );
+
+        // 2. Outgoing accepted requests
+        const acceptedReqs = await FriendRequest.find({
+            sender: userId,
+            status: "accepted",
+        }).populate(
+            "recipient",
+            "name profilePic nativeLanguage location bio"
+        );
+
+        // 3. Response
+        return res.status(200).json({
+            success: true,
+            incomingReqs,
+            acceptedReqs,
+        });
+
+    } catch (error) {
+        console.error(
+            "Error in getFriendRequests controller:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error.",
+        });
+    }
+}
