@@ -135,3 +135,73 @@ export async function sendFriendRequest(req, res) {
         });
     }
 }
+
+export async function acceptFriendRequest(req, res) {
+    try {
+        const { id: requestId } = req.params;
+
+        // 1. Find friend request
+        const friendRequest = await FriendRequest.findById(requestId);
+
+        if (!friendRequest) {
+            return res.status(404).json({
+                success: false,
+                message: "Friend request not found.",
+            });
+        }
+
+        // 2. Prevent re-accepting same request
+        if (friendRequest.status === "accepted") {
+            return res.status(400).json({
+                success: false,
+                message: "Friend request already accepted.",
+            });
+        }
+
+        // 3. Verify recipient is the logged-in user
+        if (
+            friendRequest.recipient.toString() !==
+            req.user._id.toString()
+        ) {
+            return res.status(403).json({
+                success: false,
+                message:
+                    "You are not authorized to accept this request.",
+            });
+        }
+
+        // 4. Mark request as accepted
+        friendRequest.status = "accepted";
+        await friendRequest.save();
+
+        // 5. Add each user to the other's friend list
+        await User.findByIdAndUpdate(friendRequest.sender, {
+            $addToSet: {
+                friends: friendRequest.recipient,
+            },
+        });
+
+        await User.findByIdAndUpdate(friendRequest.recipient, {
+            $addToSet: {
+                friends: friendRequest.sender,
+            },
+        });
+
+        // 6. Success response
+        return res.status(200).json({
+            success: true,
+            message: "Friend request accepted.",
+        });
+
+    } catch (error) {
+        console.error(
+            "Accept Friend Request Error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error.",
+        });
+    }
+}
