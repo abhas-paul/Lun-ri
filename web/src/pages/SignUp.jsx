@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router";
 import { toast } from "react-hot-toast";
 
-import { axiosInstance } from "../lib/axios";
+import { useSignup } from "../hooks/useSignup";
 
 function SignUp() {
   const [signupData, setSignupData] = useState({
@@ -12,8 +11,7 @@ function SignUp() {
     password: "",
   });
 
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const { mutate: signup, isPending } = useSignup();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,38 +21,6 @@ function SignUp() {
       [name]: value,
     }));
   };
-
-  const { mutate: signup, isPending } = useMutation({
-    mutationFn: async (userData) => {
-      const { data } = await axiosInstance.post(
-        "/auth/signup",
-        userData
-      );
-
-      return data;
-    },
-
-    onSuccess: async () => {
-      toast.success("Account created successfully!");
-
-      await queryClient.invalidateQueries({
-        queryKey: ["authUser"],
-      });
-
-      navigate("/onboarding", { replace: true });
-    },
-
-    onError: (error) => {
-      console.error("Signup Error:", error);
-
-      const message =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Something went wrong. Please try again.";
-
-      toast.error(message);
-    },
-  });
 
   const handleSignup = (e) => {
     e.preventDefault();
