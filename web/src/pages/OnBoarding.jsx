@@ -1,127 +1,207 @@
-import React from "react";
+import { useState } from "react";
 import { CameraIcon } from "lucide-react";
+import { toast } from "react-hot-toast";
+
 import { LANGUAGES } from "../constants";
+import { useOnboarding } from "../hooks/useOnboarding";
+
+// Cloudinary upload helper
+const uploadToCloudinary = async (file) => {
+  const formData = new FormData();
+
+  formData.append("file", file);
+  formData.append(
+    "upload_preset",
+    import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+  );
+
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const data = await res.json();
+
+  if (!data.secure_url) {
+    throw new Error("Cloudinary upload failed");
+  }
+
+  return data.secure_url;
+};
 
 function OnBoarding() {
-  return (
-    <section className="min-h-[100%] w-full flex items-center justify-center p-4 sm:p-6" data-theme="calmpizza">
-      <article className="w-full max-w-xl bg-[#222222] rounded-2xl flex flex-col items-center py-6 sm:py-8">
-        <header>
-          <h1 className="pt-2 text-xl sm:text-2xl tracking-wide text-center">
-            Complete Your Profile
-          </h1>
-        </header>
+  const [formData, setFormData] = useState({
+    name: "",
+    bio: "",
+    nativeLanguage: "",
+    location: "",
+    profilePic: "",
+  });
 
-        <label
-          htmlFor="profilePic"
-          className="cursor-pointer group mt-6 sm:mt-8"
-        >
-          <figure className="size-28 sm:size-32 rounded-full bg-base-300 border border-base-content/10 overflow-hidden flex items-center justify-center transition-all group-hover:scale-[1.02] group-hover:border-primary">
-            <CameraIcon className="size-10 opacity-50 group-hover:opacity-80 transition-opacity" />
-          </figure>
+  const { mutate: completeOnboarding, isPending } = useOnboarding();
+
+  // ✅ IMAGE UPLOAD (Cloudinary)
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      return toast.error("Please upload a valid image.");
+    }
+
+    try {
+      const toastId = toast.loading("Uploading image...");
+
+      const url = await uploadToCloudinary(file);
+
+      setFormData((prev) => ({
+        ...prev,
+        profilePic: url,
+      }));
+
+      toast.dismiss(toastId);
+      toast.success("Image uploaded");
+    } catch (err) {
+      toast.error("Image upload failed");
+    }
+  };
+
+  // ✅ SUBMIT (ONLY NAME REQUIRED)
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!formData.name.trim()) {
+      return toast.error("Name is required");
+    }
+
+    completeOnboarding({
+      name: formData.name.trim(),
+      bio: formData.bio?.trim() || "",
+      nativeLanguage: formData.nativeLanguage || "",
+      location: formData.location?.trim() || "",
+      profilePic: formData.profilePic || "",
+    });
+  };
+
+  return (
+    <section
+      className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6"
+      data-theme="calmpizza"
+    >
+      <article className="w-full max-w-xl bg-[#222222] rounded-2xl flex flex-col items-center py-6 sm:py-8">
+
+        <h1 className="pt-2 text-xl sm:text-2xl text-center">
+          Complete Your Profile
+        </h1>
+
+        {/* PROFILE IMAGE */}
+        <label htmlFor="profilePic" className="cursor-pointer mt-6">
+          <div className="size-28 sm:size-32 rounded-full overflow-hidden bg-base-300 flex items-center justify-center border border-base-content/10">
+            {formData.profilePic ? (
+              <img
+                src={formData.profilePic}
+                className="w-full h-full object-cover"
+                alt="profile"
+              />
+            ) : (
+              <CameraIcon className="size-10 opacity-60" />
+            )}
+          </div>
         </label>
 
         <input
           id="profilePic"
-          name="profilePic"
           type="file"
           accept="image/*"
           className="hidden"
+          onChange={handleImageUpload}
         />
 
-        <p className="text-xs opacity-70 text-center mt-3">
-          Upload a profile picture
+        <p className="text-xs opacity-60 mt-2">
+          Upload profile picture (optional)
         </p>
 
-        <form className="w-full flex flex-col items-center">
-          <section className="form-control w-[85%] sm:w-[80%] mt-4">
-            <label htmlFor="name" className="label">
-              <span className="label-text font-medium pb-2">
-                Full Name
-              </span>
-            </label>
-
+        {/* FORM */}
+        <form
+          onSubmit={handleSubmit}
+          className="w-full flex flex-col items-center"
+        >
+          {/* NAME (required) */}
+          <div className="w-[85%] mt-4">
+            <label className="label pb-2">Full Name</label>
             <input
-              id="name"
-              name="name"
               type="text"
-              placeholder="Abhas Paul"
               className="input input-bordered w-full"
+              placeholder="Abhas Paul"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
             />
-          </section>
+          </div>
 
-          <section className="form-control w-[85%] sm:w-[80%] mt-4">
-            <label htmlFor="bio" className="label">
-              <span className="label-text font-medium pb-2">
-                Bio
-              </span>
-            </label>
-
+          {/* BIO */}
+          <div className="w-[85%] mt-4">
+            <label className="label pb-2">Bio</label>
             <textarea
-              id="bio"
-              name="bio"
-              placeholder="Tell people a little about yourself, your interests, and what you're passionate about..."
-              className="textarea textarea-bordered w-full h-24 sm:h-28 resize-y"
+              className="textarea textarea-bordered w-full h-24"
+              placeholder="Tell us a bit about yourself"
+              value={formData.bio}
+              onChange={(e) =>
+                setFormData({ ...formData, bio: e.target.value })
+              }
             />
-          </section>
+          </div>
 
-          <section className="form-control w-[85%] sm:w-[80%] mt-4">
-            <label
-              htmlFor="nativeLanguage"
-              className="label"
-            >
-              <span className="label-text font-medium pb-2">
-                Native Language
-              </span>
-            </label>
-
+          {/* LANGUAGE */}
+          <div className="w-[85%] mt-4">
+            <label className="label pb-2">Native Language</label>
             <select
-              id="nativeLanguage"
-              name="nativeLanguage"
               className="select select-bordered w-full"
+              value={formData.nativeLanguage}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  nativeLanguage: e.target.value,
+                })
+              }
             >
-              <option value="">
-                Select your native language
-              </option>
-
-              {LANGUAGES.map((language) => (
-                <option
-                  key={language}
-                  value={language}
-                >
-                  {language}
+              <option value="">Select language</option>
+              {LANGUAGES.map((lang) => (
+                <option key={lang} value={lang}>
+                  {lang}
                 </option>
               ))}
             </select>
-          </section>
+          </div>
 
-          <section className="form-control w-[85%] sm:w-[80%] mt-4">
-            <label
-              htmlFor="location"
-              className="label"
-            >
-              <span className="label-text font-medium pb-2">
-                Location
-              </span>
-            </label>
-
+          {/* LOCATION */}
+          <div className="w-[85%] mt-4">
+            <label className="label pb-2">Location</label>
             <input
-              id="location"
-              name="location"
               type="text"
-              placeholder="Kolkata, India"
               className="input input-bordered w-full"
+              placeholder="Kolkata, India"
+              value={formData.location}
+              onChange={(e) =>
+                setFormData({ ...formData, location: e.target.value })
+              }
             />
-          </section>
+          </div>
 
-          <footer className="w-[85%] sm:w-[80%] mt-6">
+          {/* SUBMIT */}
+          <div className="w-[85%] mt-6">
             <button
-              type="submit"
               className="btn btn-primary w-full"
+              disabled={isPending}
             >
-              Complete Profile
+              {isPending ? "Saving..." : "Complete Profile"}
             </button>
-          </footer>
+          </div>
         </form>
       </article>
     </section>

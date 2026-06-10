@@ -313,15 +313,21 @@ export async function onboard(req, res) {
 
         // 7. Sync user with Stream
         try {
-            await upsertStreamUser({
+            const streamData = {
                 id: updatedUser._id.toString(),
-                name: updatedUser.name,
-                image: updatedUser.profilePic,
-            });
+                name: updatedUser.name || "Unknown",
+            };
+
+            // only add image if valid
+            if (updatedUser.profilePic && updatedUser.profilePic.startsWith("http")) {
+                streamData.image = updatedUser.profilePic;
+            }
+
+            await upsertStreamUser(streamData);
         } catch (error) {
             console.error(
                 `Failed to update Stream profile for ${updatedUser._id}:`,
-                error
+                error?.response?.data || error
             );
 
             return res.status(500).json({
