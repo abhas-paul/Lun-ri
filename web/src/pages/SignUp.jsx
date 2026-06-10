@@ -15,6 +15,15 @@ function SignUp() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setSignupData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const { mutate: signup, isPending } = useMutation({
     mutationFn: async (userData) => {
       const { data } = await axiosInstance.post(
@@ -25,48 +34,48 @@ function SignUp() {
       return data;
     },
 
-    onSuccess: async (data) => {
-      toast.success(
-        data?.message || "Account created successfully!"
-      );
+    onSuccess: async () => {
+      toast.success("Account created successfully!");
 
       await queryClient.invalidateQueries({
         queryKey: ["authUser"],
       });
 
-      navigate("/", { replace: true });
+      navigate("/onboarding", { replace: true });
     },
 
     onError: (error) => {
-      toast.error(
+      console.error("Signup Error:", error);
+
+      const message =
         error?.response?.data?.message ||
-        "Something went wrong. Please try again."
-      );
+        error?.message ||
+        "Something went wrong. Please try again.";
+
+      toast.error(message);
     },
   });
 
   const handleSignup = (e) => {
     e.preventDefault();
 
-    if (
-      !signupData.name.trim() ||
-      !signupData.email.trim() ||
-      !signupData.password
-    ) {
+    const payload = {
+      name: signupData.name.trim(),
+      email: signupData.email.trim().toLowerCase(),
+      password: signupData.password,
+    };
+
+    if (!payload.name || !payload.email || !payload.password) {
       return toast.error("All fields are required.");
     }
 
-    if (signupData.password.length < 8) {
+    if (payload.password.length < 8) {
       return toast.error(
         "Password must be at least 8 characters long."
       );
     }
 
-    signup({
-      fullName: signupData.name.trim(),
-      email: signupData.email.trim().toLowerCase(),
-      password: signupData.password,
-    });
+    signup(payload);
   };
 
   return (
@@ -84,7 +93,10 @@ function SignUp() {
           </header>
 
           <form onSubmit={handleSignup}>
-            <fieldset className="space-y-4">
+            <fieldset
+              className="space-y-4"
+              disabled={isPending}
+            >
               <header>
                 <h2 className="text-xl font-semibold">
                   Create an Account
@@ -106,16 +118,13 @@ function SignUp() {
 
                   <input
                     id="fullName"
+                    name="name"
                     type="text"
                     placeholder="Abhas Paul"
                     className="input input-bordered w-full"
                     value={signupData.name}
-                    onChange={(e) =>
-                      setSignupData({
-                        ...signupData,
-                        name: e.target.value,
-                      })
-                    }
+                    onChange={handleChange}
+                    autoComplete="name"
                     required
                   />
                 </section>
@@ -130,16 +139,13 @@ function SignUp() {
 
                   <input
                     id="email"
+                    name="email"
                     type="email"
                     placeholder="abhas@gmail.com"
                     className="input input-bordered w-full"
                     value={signupData.email}
-                    onChange={(e) =>
-                      setSignupData({
-                        ...signupData,
-                        email: e.target.value,
-                      })
-                    }
+                    onChange={handleChange}
+                    autoComplete="email"
                     required
                   />
                 </section>
@@ -154,16 +160,14 @@ function SignUp() {
 
                   <input
                     id="password"
+                    name="password"
                     type="password"
                     placeholder="********"
                     className="input input-bordered w-full"
                     value={signupData.password}
-                    onChange={(e) =>
-                      setSignupData({
-                        ...signupData,
-                        password: e.target.value,
-                      })
-                    }
+                    onChange={handleChange}
+                    autoComplete="new-password"
+                    minLength={8}
                     required
                   />
 
@@ -236,9 +240,10 @@ function SignUp() {
           <section className="max-w-md p-8">
             <figure className="relative aspect-square max-w-sm mx-auto">
               <img
-                src="video-call.png"
+                src="/video-call.png"
                 alt="People connecting on Lun'ri"
                 className="w-full h-full"
+                loading="lazy"
               />
             </figure>
 
