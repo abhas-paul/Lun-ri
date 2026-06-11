@@ -19,7 +19,7 @@ function Sidebar() {
             aria-label="Primary sidebar"
             className="w-64 bg-[#151515] border-r border-base-300 hidden lg:flex flex-col h-screen sticky top-0"
         >
-            <div className="p-5 border-b border-base-300">
+            <div className="p-5 border-b border-base-300 h-16">
                 <h1>
                     <Link
                         to="/"

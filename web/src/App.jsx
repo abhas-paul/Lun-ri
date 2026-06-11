@@ -126,7 +126,9 @@ function App() {
             ) : !authUser.isOnboarded ? (
               <Navigate to="/onboarding" replace />
             ) : (
-              <Chat />
+              <Layout>
+                <Chat />
+              </Layout>
             )
           }
         />
