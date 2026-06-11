@@ -1,77 +1,94 @@
+import Loading from "../components/Loading";
+
 import { useFriends } from "../hooks/useFriends";
 import { useRecommendedUsers } from "../hooks/useRecommendedUsers";
 import { useFriendRequests } from "../hooks/useFriendRequests";
 import { useOutgoingFriendRequests } from "../hooks/useOutgoingFriendRequests";
+import { useSendFriendRequest } from "../hooks/useSendFriendRequest";
+
+import FriendSection from "../components/FriendSection";
+import RecommendedSection from "../components/RecommendedSection";
 
 function Home() {
-    const {
-        data: friendsResponse,
-        isLoading: isFriendsLoading,
-        isError: isFriendsError,
-    } = useFriends();
+  const { data: friendsResponse, isLoading: isFriendsLoading, isError: isFriendsError } =
+    useFriends();
 
-    const {
-        data: recommendedResponse,
-        isLoading: isRecommendedLoading,
-        isError: isRecommendedError,
-    } = useRecommendedUsers();
+  const {
+    data: recommendedResponse,
+    isLoading: isRecommendedLoading,
+    isError: isRecommendedError,
+  } = useRecommendedUsers();
 
-    const {
-        data: friendRequestsResponse,
-        isLoading: isFriendRequestsLoading,
-        isError: isFriendRequestsError,
-    } = useFriendRequests();
+  const {
+    data: friendRequestsResponse,
+    isLoading: isFriendRequestsLoading,
+    isError: isFriendRequestsError,
+  } = useFriendRequests();
 
-    const {
-        data: outgoingRequestsResponse,
-        isLoading: isOutgoingRequestsLoading,
-        isError: isOutgoingRequestsError,
-    } = useOutgoingFriendRequests();
+  const {
+    data: outgoingRequestsResponse,
+    isLoading: isOutgoingRequestsLoading,
+    isError: isOutgoingRequestsError,
+  } = useOutgoingFriendRequests();
 
-    
-    const friends =
-        friendsResponse?.friends ?? [];
+  const {
+    mutate: sendRequest,
+    isPending,
+    variables,
+  } = useSendFriendRequest();
 
-    const recommendedUsers =
-        recommendedResponse?.recommendedUsers ?? [];
+  const friends = friendsResponse?.friends ?? [];
+  const recommendedUsers = recommendedResponse?.recommendedUsers ?? [];
+  const incomingRequests = friendRequestsResponse?.incomingReqs ?? [];
+  const outgoingRequests = outgoingRequestsResponse?.outgoingRequests ?? [];
 
-    const incomingRequests =
-        friendRequestsResponse?.incomingReqs ?? [];
+  const outgoingRequestIds = new Set(
+    outgoingRequests.map((r) => r?.recipient?._id)
+  );
 
-    const acceptedRequests =
-        friendRequestsResponse?.acceptedReqs ?? [];
+  const isLoading =
+    isFriendsLoading ||
+    isRecommendedLoading ||
+    isFriendRequestsLoading ||
+    isOutgoingRequestsLoading;
 
-    const outgoingRequests =
-        outgoingRequestsResponse?.outgoingRequests ?? [];
+  const hasError =
+    isFriendsError ||
+    isRecommendedError ||
+    isFriendRequestsError ||
+    isOutgoingRequestsError;
 
-    const isLoading =
-        isFriendsLoading ||
-        isRecommendedLoading ||
-        isFriendRequestsLoading ||
-        isOutgoingRequestsLoading;
+  const isSending = (id) => isPending && variables === id;
 
-    const hasError =
-        isFriendsError ||
-        isRecommendedError ||
-        isFriendRequestsError ||
-        isOutgoingRequestsError;
+  if (isLoading) return <Loading />;
 
-    if (isLoading) {
-        return null;
-    }
-
-    if (hasError) {
-        return null;
-    }
-
+  if (hasError) {
     return (
-        <main
-            style={{ fontFamily: "CalSans" }}
-            className="p-4"
-        >
-            Font works!
-        </main>
+      <main className="p-6">
+        <p className="text-error" style={{ fontFamily: "RobotoSlab" }}>
+          Failed to load data. Please refresh.
+        </p>
+      </main>
     );
+  }
+
+  return (
+    <main className="p-6 sm:p-8 lg:p-10 space-y-12">
+
+      <FriendSection
+        friends={friends}
+        incomingRequests={incomingRequests}
+      />
+
+      <RecommendedSection
+        recommendedUsers={recommendedUsers}
+        outgoingRequestIds={outgoingRequestIds}
+        sendRequest={sendRequest}
+        isSending={isSending}
+      />
+
+    </main>
+  );
 }
 
 export default Home;
