@@ -1,10 +1,9 @@
 import { Link, useLocation } from 'react-router';
 import { useAuthUser } from '../hooks/useAuthUser';
 import { useLogout } from '../hooks/useLogout';
-import { BellIcon, LogOutIcon } from 'lucide-react';
+import { BellIcon, LogOutIcon, UsersIcon } from 'lucide-react';
 
 function Navbar() {
-
     const {
         data: authResponse,
         isLoading,
@@ -30,10 +29,13 @@ function Navbar() {
 
                     {/* LOGO IF WE ARE IN CHAT PAGE */}
                     {isChat ? (
-                        <div className="pl-5">
-                            <Link to="/" className="flex items-center gap-2.5">
+                        <div className="min-w-0 flex-1">
+                            <Link
+                                to="/"
+                                className="flex items-center gap-2.5 min-w-0"
+                            >
                                 <span
-                                    className="inline-block text-3xl tracking-wider bg-clip-text text-transparent bg-[#134fd6] from-primary to-secondary"
+                                    className="inline-block text-3xl tracking-wider bg-clip-text text-transparent bg-[#134fd6] from-primary to-secondary truncate"
                                     style={{ fontFamily: "MomoSignature" }}
                                 >
                                     Lun'ri
@@ -44,7 +46,29 @@ function Navbar() {
                         <div />
                     )}
 
-                    <div className="flex items-center gap-5 sm:gap-6">
+                    <div className="flex items-center gap-2 sm:gap-4 md:gap-5 lg:gap-6 shrink-0">
+
+                        {/* Friends
+                            - Visible on mobile/tablet when sidebar is hidden
+                            - Always visible on chat page
+                        */}
+                        <Link
+                            to="/friends"
+                            aria-label="Friends"
+                            className={isChat ? "" : "lg:hidden"}
+                        >
+                            <button
+                                type="button"
+                                className="btn btn-ghost btn-circle"
+                            >
+                                <UsersIcon
+                                    aria-hidden="true"
+                                    className="h-6 w-6 text-base-content opacity-70"
+                                />
+                            </button>
+                        </Link>
+
+                        {/* Notifications */}
                         <Link
                             to="/notifications"
                             aria-label="Notifications"
@@ -60,6 +84,7 @@ function Navbar() {
                             </button>
                         </Link>
 
+                        {/* User Avatar */}
                         <div className="avatar">
                             <div className="w-9 rounded-full">
                                 <img
@@ -70,6 +95,7 @@ function Navbar() {
                             </div>
                         </div>
 
+                        {/* Logout */}
                         <button
                             type="button"
                             className="btn btn-ghost btn-circle"
