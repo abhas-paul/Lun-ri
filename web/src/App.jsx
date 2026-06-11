@@ -11,6 +11,7 @@ import {
 } from "./pages/index.js";
 
 import Loading from "./components/Loading.jsx";
+import Layout from "./components/Layout.jsx";
 
 import { Toaster } from "react-hot-toast";
 import { useAuthUser } from "./hooks/useAuthUser";
@@ -39,7 +40,9 @@ function App() {
             ) : !authUser.isOnboarded ? (
               <Navigate to="/onboarding" replace />
             ) : (
-              <Home />
+              <Layout showSidebar={true} >
+                <Home />
+              </Layout>
             )
           }
         />
