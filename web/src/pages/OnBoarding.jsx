@@ -92,9 +92,9 @@ function OnBoarding() {
       className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6"
       data-theme="calmpizza"
     >
-      <article className="w-full max-w-xl bg-[#222222] rounded-2xl flex flex-col items-center py-6 sm:py-8">
+      <article className="border border-[#134fd6] w-full max-w-xl bg-[#222222] rounded-2xl flex flex-col items-center py-6 sm:py-8">
 
-        <h1 className="pt-2 text-xl sm:text-2xl text-center">
+        <h1 className="pt-2 text-xl sm:text-2xl text-center tracking-wide" style={{ fontFamily: "CalSans" }}>
           Complete Your Profile
         </h1>
 
@@ -121,8 +121,8 @@ function OnBoarding() {
           onChange={handleImageUpload}
         />
 
-        <p className="text-xs opacity-60 mt-2">
-          Upload profile picture (optional)
+        <p className="text-xs opacity-60 mt-2" style={{ fontFamily: "SpaceGrotesk" }}>
+          Upload profile picture
         </p>
 
         {/* FORM */}
@@ -132,7 +132,7 @@ function OnBoarding() {
         >
           {/* NAME (required) */}
           <div className="w-[85%] mt-4">
-            <label className="label pb-2">Full Name</label>
+            <label className="label pb-2 tracking-wide" style={{ fontFamily: "RobotoSlab" }}>Full Name</label>
             <input
               type="text"
               className="input input-bordered w-full"
@@ -141,12 +141,13 @@ function OnBoarding() {
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
               }
+              style={{ fontFamily: "SpaceGrotesk" }}
             />
           </div>
 
           {/* BIO */}
           <div className="w-[85%] mt-4">
-            <label className="label pb-2">Bio</label>
+            <label className="label pb-2 tracking-wide" style={{ fontFamily: "RobotoSlab" }}>Bio</label>
             <textarea
               className="textarea textarea-bordered w-full h-24"
               placeholder="Tell us a bit about yourself"
@@ -154,12 +155,13 @@ function OnBoarding() {
               onChange={(e) =>
                 setFormData({ ...formData, bio: e.target.value })
               }
+              style={{ fontFamily: "SpaceGrotesk" }}
             />
           </div>
 
           {/* LANGUAGE */}
           <div className="w-[85%] mt-4">
-            <label className="label pb-2">Native Language</label>
+            <label className="label pb-2 tracking-wide" style={{ fontFamily: "RobotoSlab" }}>Native Language</label>
             <select
               className="select select-bordered w-full"
               value={formData.nativeLanguage}
@@ -169,6 +171,7 @@ function OnBoarding() {
                   nativeLanguage: e.target.value,
                 })
               }
+              style={{ fontFamily: "SpaceGrotesk" }}
             >
               <option value="">Select language</option>
               {LANGUAGES.map((lang) => (
@@ -181,7 +184,7 @@ function OnBoarding() {
 
           {/* LOCATION */}
           <div className="w-[85%] mt-4">
-            <label className="label pb-2">Location</label>
+            <label className="label pb-2 tracking-wide" style={{ fontFamily: "Robotoslab" }}>Location</label>
             <input
               type="text"
               className="input input-bordered w-full"
@@ -190,14 +193,16 @@ function OnBoarding() {
               onChange={(e) =>
                 setFormData({ ...formData, location: e.target.value })
               }
+              style={{ fontFamily: "SpaceGrotesk" }}
             />
           </div>
 
           {/* SUBMIT */}
           <div className="w-[85%] mt-6">
             <button
-              className="btn btn-primary w-full"
+              className="btn btn-primary w-full tracking-wide"
               disabled={isPending}
+              style={{ fontFamily: "SpaceGrotesk" }}
             >
               {isPending ? "Saving..." : "Complete Profile"}
             </button>

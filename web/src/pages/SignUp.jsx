@@ -53,7 +53,7 @@ function SignUp() {
         {/* LEFT SIDE */}
         <section className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
           <header className="mb-4">
-            <h1 className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
+            <h1 style={{ fontFamily: "MomoSignature" }} className="text-3xl tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
               Lun'ri
             </h1>
           </header>
@@ -64,11 +64,11 @@ function SignUp() {
               disabled={isPending}
             >
               <header>
-                <h2 className="text-xl font-semibold">
+                <h2 style={{ fontFamily: "CalSans" }} className="text-xl tracking-wide">
                   Create an Account
                 </h2>
 
-                <p className="text-sm opacity-70">
+                <p className="text-sm opacity-70" style={{ fontFamily: "SpaceGrotesk" }}>
                   Join Lun'ri and connect with people who share your interests.
                 </p>
               </header>
@@ -77,7 +77,7 @@ function SignUp() {
                 {/* FULL NAME */}
                 <section className="form-control w-full">
                   <label htmlFor="fullName" className="label">
-                    <span className="label-text pb-1">
+                    <span className="label-text pb-1 tracking-wide" style={{ fontFamily: "RobotoSlab" }}>
                       Full Name
                     </span>
                   </label>
@@ -91,14 +91,15 @@ function SignUp() {
                     value={signupData.name}
                     onChange={handleChange}
                     autoComplete="name"
-                    required
+                    
+                    style={{ fontFamily: "SpaceGrotesk" }}
                   />
                 </section>
 
                 {/* EMAIL */}
                 <section className="form-control w-full">
                   <label htmlFor="email" className="label">
-                    <span className="label-text pb-1">
+                    <span className="label-text pb-1 tracking-wide" style={{ fontFamily: "RobotoSlab" }}>
                       Email
                     </span>
                   </label>
@@ -113,13 +114,14 @@ function SignUp() {
                     onChange={handleChange}
                     autoComplete="email"
                     required
+                    style={{ fontFamily: "SpaceGrotesk" }}
                   />
                 </section>
 
                 {/* PASSWORD */}
                 <section className="form-control w-full">
                   <label htmlFor="password" className="label">
-                    <span className="label-text pb-1">
+                    <span className="label-text pb-1 tracking-wide" style={{ fontFamily: "RobotoSlab" }}>
                       Password
                     </span>
                   </label>
@@ -135,15 +137,16 @@ function SignUp() {
                     autoComplete="new-password"
                     minLength={8}
                     required
+                    style={{ fontFamily: "SpaceGrotesk" }}
                   />
 
-                  <p className="text-xs opacity-70 mt-1">
+                  <p className="text-xs opacity-70 mt-1" style={{ fontFamily: "SpaceGrotesk" }}>
                     Password must be at least 8 characters long
                   </p>
                 </section>
 
                 {/* TERMS */}
-                <section className="form-control">
+                <section className="form-control" style={{ fontFamily: "SpaceGrotesk" }}>
                   <label className="label cursor-pointer justify-start gap-2">
                     <input
                       type="checkbox"
@@ -172,9 +175,10 @@ function SignUp() {
               </section>
 
               <button
-                className="btn btn-primary w-full"
+                className="btn btn-primary w-full tracking-wide"
                 type="submit"
                 disabled={isPending}
+                style={{ fontFamily: "SpaceGrotesk" }}
               >
                 {isPending ? (
                   <>
@@ -186,7 +190,7 @@ function SignUp() {
                 )}
               </button>
 
-              <footer className="text-center mt-4">
+              <footer className="text-center mt-4" style={{ fontFamily: "SpaceGrotesk" }}>
                 <p className="text-sm">
                   Already have an account?{" "}
                   <Link
@@ -213,7 +217,7 @@ function SignUp() {
               />
             </figure>
 
-            <section className="text-center space-y-3 mt-6">
+            <section className="text-center space-y-3 mt-6" style={{ fontFamily: "SpaceGrotesk" }}>
               <h2 className="text-xl font-semibold">
                 Connect with people worldwide
               </h2>

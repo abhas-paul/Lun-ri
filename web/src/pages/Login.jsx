@@ -45,7 +45,7 @@ function Login() {
         {/* LEFT SIDE */}
         <section className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
           <header className="mb-4">
-            <h1 className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
+            <h1 style={{ fontFamily: "MomoSignature" }} className="text-3xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
               Lun'ri
             </h1>
           </header>
@@ -56,11 +56,11 @@ function Login() {
               disabled={isPending}
             >
               <header>
-                <h2 className="text-xl font-semibold">
+                <h2 className="text-xl tracking-wide" style={{ fontFamily: "CalSans" }}>
                   Welcome Back
                 </h2>
 
-                <p className="text-sm opacity-70">
+                <p className="text-sm opacity-70" style={{ fontFamily: "SpaceGrotesk" }}>
                   Sign in to continue connecting with your communities.
                 </p>
               </header>
@@ -69,7 +69,7 @@ function Login() {
                 {/* EMAIL */}
                 <section className="form-control w-full">
                   <label htmlFor="email" className="label">
-                    <span className="label-text pb-1">
+                    <span className="label-text pb-1 tracking-wide" style={{ fontFamily: "RobotoSlab" }}>
                       Email
                     </span>
                   </label>
@@ -84,13 +84,14 @@ function Login() {
                     onChange={handleChange}
                     autoComplete="email"
                     required
+                    style={{ fontFamily: "SpaceGrotesk" }}
                   />
                 </section>
 
                 {/* PASSWORD */}
                 <section className="form-control w-full">
                   <label htmlFor="password" className="label">
-                    <span className="label-text pb-1">
+                    <span className="label-text pb-1 tracking-wide" style={{ fontFamily: "RobotoSlab" }}>
                       Password
                     </span>
                   </label>
@@ -105,14 +106,16 @@ function Login() {
                     onChange={handleChange}
                     autoComplete="current-password"
                     required
+                    style={{ fontFamily: "SpaceGrotesk" }}
                   />
                 </section>
               </section>
 
               <button
-                className="btn btn-primary w-full"
+                className="btn btn-primary w-full tracking-wide"
                 type="submit"
                 disabled={isPending}
+                style={{ fontFamily: "SpaceGrotesk" }}
               >
                 {isPending ? (
                   <>
@@ -124,7 +127,7 @@ function Login() {
                 )}
               </button>
 
-              <footer className="text-center mt-4">
+              <footer className="text-center mt-4" style={{ fontFamily: "SpaceGrotesk" }}>
                 <p className="text-sm">
                   Don't have an account?{" "}
                   <Link
@@ -151,7 +154,7 @@ function Login() {
               />
             </figure>
 
-            <section className="text-center space-y-3 mt-6">
+            <section className="text-center space-y-3 mt-6" style={{ fontFamily: "SpaceGrotesk" }}>
               <h2 className="text-xl font-semibold">
                 Reconnect with your world
               </h2>
