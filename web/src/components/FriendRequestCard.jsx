@@ -32,7 +32,7 @@ export default function FriendRequestCard({
 
               <div className="flex flex-wrap gap-1 mt-1">
                 {sender.nativeLanguage && (
-                  <span className="badge badge-secondary badge-sm">
+                  <span className="badge bg-[#151515] border-[#134fd6] badge-secondary badge-sm">
                     Native: {sender.nativeLanguage}
                   </span>
                 )}

@@ -29,7 +29,7 @@ export default function AcceptedRequestCard({ item }) {
             </p>
           </div>
 
-          <span className="badge badge-success">
+          <span className="inline-block text-white border bg-[#151515] border-[#134fd6] rounded-xl text-xs p-1.5 sm:text-sm sm:p-2 md:text-base md:p-2.5">
             New Friend
           </span>
 
