@@ -3,7 +3,7 @@ import { MapPinIcon } from "lucide-react";
 export default function FriendCard({ friend }) {
   return (
     <article
-      className="card bg-base-200"
+      className="card bg-[#151515] border border-[#134fd6]"
       style={{ fontFamily: "SpaceGrotesk" }}
     >
       <div className="card-body">
@@ -17,10 +17,6 @@ export default function FriendCard({ friend }) {
 
           <div>
             <h3>{friend.name}</h3>
-
-            <p className="text-xs opacity-70">
-              @{friend.name?.toLowerCase()}
-            </p>
 
             {friend.location && friend.location.trim() !== "" && (
               <p className="text-xs opacity-70 flex items-center gap-1">

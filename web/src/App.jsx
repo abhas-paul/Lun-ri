@@ -98,7 +98,9 @@ function App() {
             ) : !authUser.isOnboarded ? (
               <Navigate to="/onboarding" replace />
             ) : (
-              <Notifications />
+              <Layout showSidebar={true} >
+                <Notifications />
+              </Layout>
             )
           }
         />
