@@ -127,7 +127,6 @@ function Sidebar() {
                             </p>
 
                             <p className="text-xs text-success flex items-center gap-1">
-                                <span className="size-2 rounded-full bg-success inline-block" />
                                 Online
                             </p>
                         </div>
