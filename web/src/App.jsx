@@ -107,7 +107,7 @@ function App() {
 
         {/* CALL */}
         <Route
-          path="/call"
+          path="/call/:id"
           element={
             !authUser ? (
               <Navigate to="/login" replace />

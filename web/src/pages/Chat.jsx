@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
 
 import {
     Chat,
@@ -29,6 +30,8 @@ function ChatPage() {
 
     const [chatClient, setChatClient] = useState(null);
     const [channel, setChannel] = useState(null);
+
+    const navigate = useNavigate();
 
     const {
         data: authData,
@@ -119,7 +122,16 @@ function ChatPage() {
     }, [authUser, token, targetUserId]);
 
     const handleVideoCall = () => {
-        toast("Video calling coming soon 🚀");
+        if (!authUser || !targetUserId) return;
+
+        const callId = [
+            authUser._id.toString(),
+            targetUserId,
+        ]
+            .sort()
+            .join("-");
+
+        navigate(`/call/${callId}`);
     };
 
     if (
@@ -131,7 +143,7 @@ function ChatPage() {
         return <ChatLoader />;
     }
 
-    return (<div className="h-[calc(100dvh-64px)] w-full overflow-hidden bg-base-100"> <Chat
+    return (<div className="h-[calc(100dvh-64px)] w-full overflow-hidden bg-base-100" data-theme="calmpizza"> <Chat
         client={chatClient}
         theme="str-chat__theme-dark"
     > <Channel channel={channel}> <div className="relative h-full w-full"> <CallButton
