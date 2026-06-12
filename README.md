@@ -19,30 +19,6 @@ A modern real-time social communication platform built with React, Node.js, Mong
 
 </div>
 
----
-
-## 📸 Preview
-
-> Add screenshots or GIFs of your application here.
-
-### 🏠 Home Page
-
-![Home](./assets/home.png)
-
-### 💬 Chat Interface
-
-![Chat](./assets/chat.png)
-
-### 📹 Video Calling
-
-![Video Call](./assets/video-call.png)
-
-### 👤 User Profile
-
-![Profile](./assets/profile.png)
-
----
-
 ## ✨ About
 
 Lun-ri is a modern full-stack communication platform that allows users to connect, chat, and communicate in real time.
