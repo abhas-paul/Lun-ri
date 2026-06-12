@@ -121,14 +121,14 @@ function App() {
 
         {/* CHAT */}
         <Route
-          path="/chat"
+          path="/chat/:id"
           element={
             !authUser ? (
               <Navigate to="/login" replace />
             ) : !authUser.isOnboarded ? (
               <Navigate to="/onboarding" replace />
             ) : (
-              <Layout>
+              <Layout showSidebar={false}>
                 <Chat />
               </Layout>
             )

@@ -1,4 +1,5 @@
 import { MapPinIcon } from "lucide-react";
+import { Link } from 'react-router';
 
 export default function FriendCard({ friend }) {
   return (
@@ -35,7 +36,9 @@ export default function FriendCard({ friend }) {
             {friend.bio}
           </p>
         )}
-
+        <Link to={`/chat/${friend._id}`} className="btn btn-outline w-full">
+          Message
+        </Link>
       </div>
     </article>
   );
