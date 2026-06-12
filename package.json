@@ -6,7 +6,6 @@
   "scripts": {
   "build": "npm run build --prefix web",
   "start": "npm run start --prefix backend",
-  "postinstall": "npm install --prefix backend && npm install --prefix web"
   },
   "repository": {
     "type": "git",
