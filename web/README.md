@@ -1,16 +1,125 @@
-# React + Vite
+# Web (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend for the real-time chat and video calling application built with React and Vite.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React
+- Vite
+- Tailwind CSS
+- React Router DOM
+- Axios
+- Cloudinary
+- Stream Video SDK
+- Stream Chat SDK
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Authentication
+- User onboarding
+- Profile management
+- Friend system
+- Real-time messaging
+- Video calling
+- Image uploads
+- Protected routes
+- Responsive design
+- Modern UI/UX
 
-## Expanding the ESLint configuration
+## Environment Variables
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Create a `.env` file inside the `web` directory:
+
+```env
+MODE=
+
+VITE_CLOUDINARY_CLOUD_NAME=
+VITE_CLOUDINARY_UPLOAD_PRESET=
+
+VITE_STREAM_API_KEY=
+```
+
+### Environment Variable Details
+
+| Variable | Description |
+|----------|-------------|
+| MODE | Current application environment |
+| VITE_CLOUDINARY_CLOUD_NAME | Your Cloudinary cloud name |
+| VITE_CLOUDINARY_UPLOAD_PRESET | Cloudinary upload preset |
+| VITE_STREAM_API_KEY | Stream Video & Chat API key |
+
+## Installation
+
+Using npm:
+
+```bash
+npm install
+```
+
+Using Bun:
+
+```bash
+bun install
+```
+
+## Running Locally
+
+Using npm:
+
+```bash
+npm run dev
+```
+
+Using Bun:
+
+```bash
+bun run dev
+```
+
+## Production Build
+
+Using npm:
+
+```bash
+npm run build
+```
+
+Using Bun:
+
+```bash
+bun run build
+```
+
+## Folder Structure
+
+```text
+web/
+├── public/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   ├── hooks/
+│   ├── layouts/
+│   ├── pages/
+│   ├── routes/
+│   ├── services/
+│   ├── store/
+│   ├── lib/
+│   └── utils/
+├── .env
+├── package.json
+├── vite.config.js
+└── README.md
+```
+
+## Notes
+
+- Make sure all environment variables are configured before starting the application.
+- Cloudinary is used for image uploads and profile pictures.
+- Stream powers the real-time chat and video calling functionality.
+- The application is optimized for desktop, tablet, and mobile devices.
+- Use the backend API server alongside the frontend for full functionality.
+
+## License
+
+This project is provided for learning and personal development purposes.
